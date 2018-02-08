@@ -93,6 +93,7 @@ const Input = styled.input`
   margin-bottom: 10px;
   box-sizing: border-box;
   padding: 0 20px;
+  user-select: all;
   
   &:focus {
     border-color: #444;
