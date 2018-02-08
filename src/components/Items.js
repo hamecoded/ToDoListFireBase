@@ -11,16 +11,20 @@ class Items extends Component {
   }
 
   handleClick = () => {
-    const {items, itemAdd} = this.props;
-    const id = items.length;
+    const {itemAdd} = this.props;
     const item = {
-      id,
       hex: "#" + ((1 << 24) * Math.random() | 0).toString(16),
-      label: `this is the ${id} item`
+      label: `new item`
     };
 
     itemAdd(item);
   };
+
+  emptyState() {
+    return (
+      <Empty>you don't have any items yet</Empty>
+    );
+  }
 
   render() {
     const {items, itemDelete, resetItems} = this.props;
@@ -32,17 +36,20 @@ class Items extends Component {
             list items
             <AddButton onClick={this.handleClick}>+</AddButton>
           </Title>
-          <ListContainer>
-            {items.map(({id, label, hex}) => (
-              <Item
-                key={`item-${id}`}
-                label={label}
-                hex={hex}
-                id={id}
-                onDelete={itemDelete}
-              />
-            ))}
-          </ListContainer>
+          {
+            items.length ?
+              <ListContainer>
+                {items.map(({id, label, hex}) => (
+                  <Item
+                    key={`item-${id}`}
+                    label={label}
+                    hex={hex}
+                    id={id}
+                    onDelete={itemDelete}
+                  />
+                ))}
+              </ListContainer> : this.emptyState()
+          }
           <ResetButton onClick={resetItems}>Reset</ResetButton>
         </Card>
       </Container>
@@ -70,7 +77,8 @@ const Container = styled.div`
 
 const Card = styled.div`
   width: 400px;
-  min-height: 600px;
+  min-height: 300px;
+  max-height: 600px;
   background: #fff;
   display: flex;
   border-radius: 10px;
@@ -112,18 +120,32 @@ const ListContainer = styled.div`
   flex-direction: column;
   width: 100%;
   margin-top: 40px;
+  max-height: 500px;
+  overflow-y: auto;
 `;
 
 
 const ResetButton = styled.div`
   box-sizing: border-box;
   padding: 15px 0px;
-  background: purple;
+  background: #444;
   color: white;
   font-size: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  transition: all 300ms;
   
+  &:hover {
+    background: #ce0000;
+  }
+`;
+
+const Empty = styled.div`
+  width: 100%;
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 14px;
+  color: #888;
 `;

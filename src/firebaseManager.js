@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import {initialState} from './redux/reducers/itemsReducer';
 
 class fbManager {
   constructor() {
@@ -30,6 +31,21 @@ class fbManager {
     this.database.ref(path).on('value', (snapshot) => {
       callback(snapshot.val());
     });
+  }
+
+  add(item) {
+    console.log(item);
+    //this.database.ref('items/' + item.id).set(item);
+    this.database.ref('items/').push(item);
+  }
+
+  // https://firebase.google.com/docs/reference/js/firebase.database.Reference#remove
+  remove(id) {
+    return this.database.ref(`/items/${id}`).remove();
+  }
+
+  reset() {
+    this.database.ref('items').set(initialState);
   }
 }
 
