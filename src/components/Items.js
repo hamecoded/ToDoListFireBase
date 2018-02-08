@@ -1,14 +1,17 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import styled from 'styled-components';
 import Item from './Item';
-import {itemDelete, itemAdd, resetItems} from '../redux/actions/itemActions';
+import {itemDelete, itemAdd, resetItems, fetchItems} from '../redux/actions/itemActions';
 
 
 class Items extends Component {
+  componentWillMount() {
+    this.props.fetchItems();
+  }
 
   handleClick = () => {
-    const { items, itemAdd } = this.props;
+    const {items, itemAdd} = this.props;
     const id = items.length;
     const item = {
       id,
@@ -20,7 +23,7 @@ class Items extends Component {
   };
 
   render() {
-    const { items, itemDelete, resetItems } = this.props;
+    const {items, itemDelete, resetItems} = this.props;
 
     return (
       <Container>
@@ -30,7 +33,7 @@ class Items extends Component {
             <AddButton onClick={this.handleClick}>+</AddButton>
           </Title>
           <ListContainer>
-            {items.map(({ id, label, hex }) => (
+            {items.map(({id, label, hex}) => (
               <Item
                 key={`item-${id}`}
                 label={label}
@@ -54,7 +57,8 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   itemDelete,
   itemAdd,
-  resetItems
+  resetItems,
+  fetchItems
 })(Items);
 
 const Container = styled.div`

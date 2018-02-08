@@ -1,10 +1,15 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 
+// middlewares
+import firebaseMiddleare from './middlewares/firebaseMiddleware';
+
 // root reducer
 import rootReducer from './reducers/rootReducer';
 
+const middlewares = [firebaseMiddleare];
+
 const storeEnhancers = compose(
-  applyMiddleware()
+  applyMiddleware(...middlewares)
 );
 
 const initialState = {};

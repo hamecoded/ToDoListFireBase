@@ -17,3 +17,10 @@ export const itemAdd = (item) => ({
 export const resetItems = () => ({
   type: actionTypes.ITEMS_RESET
 });
+
+export const fetchItems = () => ({
+  type: actionTypes.ITEMS_FETCH,
+  meta: {
+    success:  actionTypes.ITEMS_FETCH_SUCCESS
+  }
+});
