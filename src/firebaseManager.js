@@ -4,10 +4,9 @@ import {initialState} from './redux/reducers/itemsReducer';
 class fbManager {
   constructor() {
     console.log('new manager');
-    this.init();
   }
 
-  init() {
+  init(setUser) {
     // Initialize Firebase
     const config = {
       apiKey: "AIzaSyBKglDHKQalwTKYwo9VgbQZn9bo_Zyh2Fk",
@@ -21,7 +20,21 @@ class fbManager {
     firebase.initializeApp(config);
 
     this.database = firebase.database();
+    this.subscribeToAuth(setUser);
   }
+  
+  subscribeToAuth = (setUser) => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in.
+        // fire action for set user
+        setUser(user);
+      } else {
+        // User is signed out.
+        // fire action for logout
+      }
+    });
+  };
 
   get(path) {
     return this.database.ref(path).once('value');
@@ -46,6 +59,10 @@ class fbManager {
 
   reset() {
     this.database.ref('items').set(initialState);
+  }
+
+  login(email, password) {
+    firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {});
   }
 }
 

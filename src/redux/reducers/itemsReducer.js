@@ -1,7 +1,7 @@
 import * as actionTypes from '../actionTypes';
 
 export const initialState =  [
-  { hex: '#dadada', label: 'this is the default sample item' }
+  // { hex: '#dadada', label: 'this is the default sample item' }
 ];
 
 const itemsReducer = (state = initialState, action) => {

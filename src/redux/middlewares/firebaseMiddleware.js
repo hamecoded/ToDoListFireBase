@@ -14,47 +14,61 @@ const objToArr = (obj) => {
 };
 
 const instance = new firebaseManager();
-const firebaseMiddleware = ({dispatch}) => next => action => {
-  switch (action.type) {
-    case actionTypes.ITEMS_RESET:
-      instance.reset();
-      break;
-    case actionTypes.ITEM_DELETE:
-      instance.remove(action.payload.id)
-        .then(function() {
-          console.log("Remove succeeded.")
-        })
-        .catch(function(error) {
-          console.log("Remove failed: " + error.message)
-        });
-      break;
-    case actionTypes.ITEM_ADD:
-      instance.add(action.payload.item);
-      break;
-    case actionTypes.ITEMS_FETCH:
-      // only once
-      // instance.get('/items').then((snapshot) => {
-      //   dispatch({
-      //     type: actionTypes.ITEMS_FETCH_SUCCESS,
-      //     payload: {data: snapshot.val()}
-      //   });
-      // });
+const firebaseMiddleware = ({dispatch}) => {
+  const setUser = (user) => dispatch({
+    type: actionTypes.SET_USER,
+    payload: {user}
+  });
 
-      // subscribe
-      const callback = (data) => {
-        dispatch({
-          type: actionTypes.ITEMS_FETCH_SUCCESS,
-          payload: {data: objToArr(data)}
-        });
-      };
+  instance.init(setUser);
 
-      instance.subscribe('/items', callback);
-      break;
-    default:
-      break;
-  }
+  return next => action => {
+    switch (action.type) {
+      case actionTypes.ITEMS_RESET:
+        instance.reset();
+        break;
+      case actionTypes.ITEM_DELETE:
+        instance.remove(action.payload.id)
+          .then(function () {
+            console.log("Remove succeeded.")
+          })
+          .catch(function (error) {
+            console.log("Remove failed: " + error.message)
+          });
+        break;
+      case actionTypes.ITEM_ADD:
+        instance.add(action.payload.item);
+        break;
+      case actionTypes.ITEMS_FETCH:
+        // only once
+        // instance.get('/items').then((snapshot) => {
+        //   dispatch({
+        //     type: actionTypes.ITEMS_FETCH_SUCCESS,
+        //     payload: {data: snapshot.val()}
+        //   });
+        // });
 
-  next(action);
+        // subscribe
+        const callback = (data) => {
+          dispatch({
+            type: actionTypes.ITEMS_FETCH_SUCCESS,
+            payload: {data: objToArr(data)}
+          });
+        };
+
+        instance.subscribe('/items', callback);
+        break;
+      case actionTypes.LOGIN:
+        const {email, password} = action.payload;
+
+        instance.login(email, password);
+        break;
+      default:
+        break;
+    }
+
+    next(action);
+  };
 };
 
 export default firebaseMiddleware;
